@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>My Blogging Site</title>
+  </head>
+  <body>
+    <h1 class="text-center m-3 p-2">My Blogging Site</h1>
+    <ul class="nav nav-tabs justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link" href="/blog">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/blog/blogs">View All Blogs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/blog/bloggers">View All Bloggers</a>
+        </li>
+        <li class="nav-item">
+          {% if user.is_authenticated %}
+          <a class="nav-link" href="/blog/logout">Logout</a>
+          {% else %}
+          <a class="nav-link" href="/blog/login">Login</a>
+          {% endif %}
+        </li>
+    </ul>
+
+    <div class="container jumbotron mt-4">
+        <h3 class="text-center">All Blogs</h3>
+        {% if all_blogs %}
+            <ul>
+            {% for blog in all_blogs %}
+                <div class="card my-3">
+                    <div class="card-body">
+                        <a href="/blog/blogs/{{ blog.id }}">{{ blog.post_title }}</a>
+                        <footer class="blockquote-footer">Posted by <a href="/blog/bloggers/{{ blog.create_by.id }}">{{ blog.create_by.author_name }}</a> on {{ blog.date_publishshed }}</footer>
+                    </div>
+                </div>
+            {% endfor %}
+            </ul>
+
+            {% if all_blogs.has_other_pages %}
+              <ul class="pagination justify-content-center">
+                {% if all_blogs.has_previous %}
+                  <li class="page-item"><a href="?page={{ all_blogs.previous_page_number }}" class="page-link">&laquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><a class="page-link">&laquo;</a></li>
+                {% endif %}
+                {% for i in all_blogs.paginator.page_range %}
+                  {% if all_blogs.number == i %}
+                    <li class="page-item active"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+                  {% else %}
+                    <li class="page-item"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if all_blogs.has_next %}
+                  <li class="page-item"><a href="?page={{ all_blogs.next_page_number }}" class="page-link">&raquo;</a></li>
+                {% else %}
+                <li class="page-item disabled"><a class="page-link">&raquo;</a></li>
+                {% endif %}
+              </ul>
+          {% endif %}
+        {% else %}
+            <p>No blogs are available.</p>
+        {% endif %}
+    </div>
+    
+  </body>
+</html>
